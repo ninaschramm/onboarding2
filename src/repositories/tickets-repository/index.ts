@@ -1,4 +1,5 @@
 import { prisma } from "@/config";
+import { Prisma } from "@prisma/client";
 
 async function getAllTicketTypes() {
   return prisma.ticketType.findMany();
@@ -11,7 +12,6 @@ async function getEnrollmentId(userId: number) {
     },
   });
 
-  console.log(enrollmentId);
   return enrollmentId;
 }
 
@@ -28,9 +28,28 @@ async function getTicketByUserId(userId: number) {
   });
 }
 
+async function postNewTicket(data: Prisma.TicketUncheckedCreateInput) {
+  const result = await prisma.ticket.create({
+    data
+  });
+
+  const { enrollmentId } = data;
+
+  return prisma.ticket.findFirst({
+    where: {
+      enrollmentId
+    },
+    include: {
+      TicketType: true
+    }
+  });
+}
+
 const ticketsRepository = {
   getAllTicketTypes,
   getTicketByUserId,
+  getEnrollmentId,
+  postNewTicket
 };
 
 export default ticketsRepository;
