@@ -13,10 +13,21 @@ async function getAllTicketTypes(): Promise<TicketTypeResult[]> {
   return result;
 }
 
+async function getTicketsByUserId(userId: number) {
+  const result = await ticketsRepository.getTicketByUserId(userId);
+
+  if (!result || result.length === 0 ) {
+    throw notFoundError();
+  }
+
+  return result;
+}
+
 type TicketTypeResult = Partial<TicketType>
 
 const ticketsService = {
   getAllTicketTypes,
+  getTicketsByUserId
 };
   
 export default ticketsService;
