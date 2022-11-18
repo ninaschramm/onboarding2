@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { } from "@/controllers";
 import { authenticateToken } from "@/middlewares";
 import { getAllTicketTypes, getTicketsByUserId, postNewTicket } from "@/controllers/tickets-controller";
 

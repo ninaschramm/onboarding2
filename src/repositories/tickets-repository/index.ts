@@ -33,11 +33,11 @@ async function postNewTicket(data: Prisma.TicketUncheckedCreateInput) {
     data
   });
 
-  const { enrollmentId } = data;
+  const { id } = result;
 
   return prisma.ticket.findFirst({
     where: {
-      enrollmentId
+      id
     },
     include: {
       TicketType: true

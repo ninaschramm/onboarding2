@@ -2,7 +2,6 @@ import { AuthenticatedRequest } from "@/middlewares";
 import ticketsService from "@/services/tickets-service";
 import { Response } from "express";
 import httpStatus from "http-status";
-import { number } from "joi";
 
 export async function getAllTicketTypes(req: AuthenticatedRequest, res: Response) {
   try {
