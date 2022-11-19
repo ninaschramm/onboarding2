@@ -29,7 +29,7 @@ async function processPaymentForTicket(cardData: Prisma.PaymentUncheckedCreateIn
 
   const ticketStatus: TicketStatus = "PAID";
 
-  const updatedTicket = await prisma.ticket.update({
+  await prisma.ticket.update({
     where: {
       id: cardData.ticketId
     },
