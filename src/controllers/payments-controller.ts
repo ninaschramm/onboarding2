@@ -24,4 +24,24 @@ export async function getPaymentsForTicket(req: AuthenticatedRequest, res: Respo
     }
   }
 }
-  
+
+export async function processPaymentForTicket(req: AuthenticatedRequest, res: Response) {
+  const { ticketId, cardData } = req.body;
+  const { userId } = req;
+
+  if (!ticketId || cardData === null || cardData === undefined ) {
+    return res.sendStatus(httpStatus.BAD_REQUEST);
+  }
+
+  try {
+    const result: Payment = await paymentsService.processPaymentForTicket(parseInt(ticketId), userId, cardData);
+    return res.status(httpStatus.OK).send(result);
+  } catch (error) {
+    if (error.name === "NotFoundError") {
+      return res.sendStatus(httpStatus.NOT_FOUND);
+    }
+    else {
+      return res.sendStatus(httpStatus.UNAUTHORIZED);
+    }
+  }
+}

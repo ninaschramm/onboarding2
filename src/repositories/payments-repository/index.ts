@@ -1,6 +1,6 @@
 import { prisma } from "@/config";
-import { Payment, Ticket } from "@prisma/client";
-import ticketsRepository from "@/repositories/tickets-repository";
+import { Payment, Ticket, TicketStatus, TicketType } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
 async function getPaymentsForTicket(ticketId: number) {
   const result: Payment = await prisma.payment.findFirst({
@@ -16,15 +16,46 @@ async function checkTicket(ticketId: number) {
   const result: Ticket = await prisma.ticket.findFirst({
     where: {
       id: ticketId,         
+    },    
+  });
+  
+  return result;
+}
+
+async function processPaymentForTicket(cardData: Prisma.PaymentUncheckedCreateInput) {
+  const result: Payment = await prisma.payment.create({
+    data: cardData
+  });
+
+  const ticketStatus: TicketStatus = "PAID";
+
+  const updatedTicket = await prisma.ticket.update({
+    where: {
+      id: cardData.ticketId
+    },
+    data: {
+      status: ticketStatus
     },
   });
 
   return result;
 }
 
+async function getTicketValue(ticketTypeId: number) {
+  const result: TicketType = await prisma.ticketType.findFirst({
+    where: {
+      id: ticketTypeId,         
+    },    
+  });
+
+  return result.price;
+}
+
 const paymentsRepository = {
   getPaymentsForTicket,
-  checkTicket
+  checkTicket,
+  processPaymentForTicket,
+  getTicketValue
 };
 
 export default paymentsRepository;
